@@ -31,14 +31,31 @@ repositories {
 
 ext{
 	fastjsonvVersion = '1.2.41'
+	log4jdbcVersion = '1.2'
+	hutoolVersion = '4.0.0'
+	mybatisPlusVersion = '2.1.8'
+	mybatisplusStarterVersion = '1.0.5'
 }
 
 
 dependencies {
+	compile "com.baomidou:mybatisplus-spring-boot-starter:$mybatisplusStarterVersion"
+	compile "com.baomidou:mybatis-plus:$mybatisPlusVersion"
+	compile "cn.hutool:hutool-all:$hutoolVersion"
 	compile "com.alibaba:fastjson:$fastjsonvVersion"
-	compile('com.googlecode.log4jdbc:log4jdbc:1.2')
+	compile "com.googlecode.log4jdbc:log4jdbc:$log4jdbcVersion"
 	compile('org.springframework.boot:spring-boot-starter-web')
+
+	compile('org.webjars:jquery:2.1.1')
+	compile('org.webjars:bootstrap:3.2.0')
+	compile('org.webjars:webjars-locator')
+	compile('org.springframework.boot:spring-boot-starter-security')
+	compile('org.springframework.security.oauth:spring-security-oauth2')
+
 	runtime "mysql:mysql-connector-java"
 	compileOnly('org.projectlombok:lombok')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+
+//	compile 'com.jayway.restassured:rest-assured:2.9.0'
+
 }
