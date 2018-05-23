@@ -1,7 +1,7 @@
 package com.nuvole.framework.service;
 
 import com.baomidou.mybatisplus.service.IService;
-import com.nuvole.framework.entity.User;
+import com.nuvole.framework.domain.SysUser;
 
 import java.util.List;
 
@@ -10,10 +10,9 @@ import java.util.List;
  * Date：2018/1/16
  * time：10:31
  */
-public interface IUserService extends IService<User> {
+public interface IUserService extends IService<SysUser> {
 
-    boolean deleteAll();
+    List<SysUser> selectListBySQL();
 
-    List<User> selectListBySQL();
-
+    SysUser findByUsername(String username);
 }

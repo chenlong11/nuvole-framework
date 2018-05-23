@@ -4,18 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.plugins.pagination.PageHelper;
-import com.nuvole.framework.entity.User;
-import com.nuvole.framework.entity.enums.AgeEnum;
-import com.nuvole.framework.entity.enums.PhoneEnum;
+import com.nuvole.framework.domain.SysUser;
 import com.nuvole.framework.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by chenlong
@@ -29,51 +24,50 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
+
+
     /**
      * 分页 PAGE
      */
     @GetMapping("/test")
-    public Page<User> test() {
-        System.out.println(userService.selectPage(new Page<User>(0, 12)));
-        return userService.selectPage(new Page<User>(0, 12));
+    public Page<SysUser> test() {
+        System.out.println(userService.selectPage(new Page<SysUser>(0, 12)));
+        return userService.selectPage(new Page<SysUser>(0, 12));
     }
 
     /**
      * AR 部分测试
      */
     @GetMapping("/test1")
-    public Page<User> test1() {
-        User user = new User("testAr", AgeEnum.ONE, 1);
-        System.err.println("删除所有：" + user.delete(null));
-        user.setRole(111L);
-        user.setTestDate(new Date());
-        user.setPhone(PhoneEnum.CMCC);
-        user.insert();
-        System.err.println("查询插入结果：" + user.selectById().toString());
-        user.setName("mybatis-plus-ar");
-        System.err.println("更新：" + user.updateById());
-        return user.selectPage(new Page<User>(0, 12), null);
+    public Page<SysUser> test1() {
+        SysUser sysUser = new SysUser(1L,"zhangsan", "zhangsan");
+        sysUser.setId(1L);
+        System.err.println("删除所有：" + sysUser.delete(null));
+        sysUser.insert();
+        System.err.println("查询插入结果：" + sysUser.selectById().toString());
+        System.err.println("更新：" + sysUser.updateById());
+        return sysUser.selectPage(new Page<SysUser>(0, 12), null);
     }
 
     /**
      * 增删改查 CRUD
      */
     @GetMapping("/test2")
-    public User test2() {
+    public SysUser test2() {
         System.err.println("删除一条数据：" + userService.deleteById(1L));
-        System.err.println("deleteAll：" + userService.deleteAll());
-        System.err.println("插入一条数据：" + userService.insert(new User(1L, "张三", AgeEnum.TWO, 1)));
-        User user = new User("张三", AgeEnum.TWO, 1);
-        boolean result = userService.insert(user);
+//        System.err.println("deleteAll：" + userService.deleteAll());
+        System.err.println("插入一条数据：" + userService.insert(new SysUser(4L, "zhangsan", "zhangsan")));
+        SysUser sysUser = new SysUser(4L, "zhangsan", "zhangsan");
+        boolean result = userService.insert(sysUser);
         // 自动回写的ID
-        Long id = user.getId();
-        System.err.println("插入一条数据：" + result + ", 插入信息：" + user.toString());
+        Long id = sysUser.getId();
+        System.err.println("插入一条数据：" + result + ", 插入信息：" + sysUser.toString());
         System.err.println("查询：" + userService.selectById(id).toString());
-        System.err.println("更新一条数据：" + userService.updateById(new User(1L, "三毛", AgeEnum.ONE, 1)));
+        System.err.println("更新一条数据：" + userService.updateById(new SysUser(1L, "三毛", "123")));
         for (int i = 0; i < 5; ++i) {
-            userService.insert(new User(Long.valueOf(100 + i), "张三" + i, AgeEnum.ONE, 1));
+            userService.insert(new SysUser(Long.valueOf(100 + i), "张三" + i, "123"));
         }
-        Page<User> userListPage = userService.selectPage(new Page<User>(1, 5), new EntityWrapper<>(new User()));
+        Page<SysUser> userListPage = userService.selectPage(new Page<SysUser>(1, 5), new EntityWrapper<>(new SysUser()));
         System.err.println("total=" + userListPage.getTotal() + ", current list size=" + userListPage.getRecords().size());
         return userService.selectById(1L);
     }
@@ -82,19 +76,17 @@ public class UserController {
      * 插入 OR 修改
      */
     @GetMapping("/test3")
-    public User test3() {
-        User user = new User(1L, "王五", AgeEnum.ONE, 1);
-        user.setPhone(PhoneEnum.CT);
-        userService.insertOrUpdate(user);
-        return userService.selectById(1L);
+    public SysUser test3() {
+        SysUser sysUser = new SysUser(4L, "zhangsan", "zhangsan");
+        userService.insertOrUpdate(sysUser);
+        return userService.selectById(4L);
     }
 
     @GetMapping("/add")
     public Object addUser() {
-        User user = new User("张三'特殊`符号", AgeEnum.TWO, 1);
-        user.setPhone(PhoneEnum.CUCC);
+        SysUser sysUser = new SysUser(4L, "zhangsan", "zhangsan");
         JSONObject result = new JSONObject();
-        result.put("result", userService.insert(user));
+        result.put("result", userService.insert(sysUser));
         return result;
     }
 
@@ -139,7 +131,7 @@ public class UserController {
     @Transactional
     @GetMapping("/test_transactional")
     public void testTransactional() {
-        userService.insert(new User(1000L, "测试事物", AgeEnum.ONE, 3));
+        userService.insert(new SysUser(4L, "zhangsan", "zhangsan"));
         System.out.println(" 这里手动抛出异常，自动回滚数据");
         throw new RuntimeException();
     }

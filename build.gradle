@@ -35,8 +35,9 @@ ext{
 	hutoolVersion = '4.0.0'
 	mybatisPlusVersion = '2.1.8'
 	mybatisplusStarterVersion = '1.0.5'
+	shiroVersion = '1.4.0'
+	oauth2Version = '1.0.2'
 }
-
 
 dependencies {
 	compile "com.baomidou:mybatisplus-spring-boot-starter:$mybatisplusStarterVersion"
@@ -46,15 +47,31 @@ dependencies {
 	compile "com.googlecode.log4jdbc:log4jdbc:$log4jdbcVersion"
 	compile('org.springframework.boot:spring-boot-starter-web')
 
+	compile 'org.springframework:spring-context-support'
+
 	compile('org.webjars:jquery:2.1.1')
 	compile('org.webjars:bootstrap:3.2.0')
 	compile('org.webjars:webjars-locator')
-	compile('org.springframework.boot:spring-boot-starter-security')
-	compile('org.springframework.security.oauth:spring-security-oauth2')
 
-	runtime "mysql:mysql-connector-java"
+	compile "org.apache.shiro:shiro-core:$shiroVersion"
+	compile "org.apache.shiro:shiro-spring:$shiroVersion"
+	compile "org.apache.shiro:shiro-ehcache:$shiroVersion"
+
+	compile "org.springframework.boot:spring-boot-starter-thymeleaf"
+	compile "net.sourceforge.nekohtml:nekohtml"
+
+	compile "org.springframework.boot:spring-boot-devtools"
+
 	compileOnly('org.projectlombok:lombok')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+
+	compile "org.apache.oltu.oauth2:org.apache.oltu.oauth2.authzserver:$oauth2Version"
+	compile "org.apache.oltu.oauth2:org.apache.oltu.oauth2.resourceserver:$oauth2Version"
+
+	compile('org.springframework.boot:spring-boot-starter-actuator')
+
+	runtime "mysql:mysql-connector-java"
+
 
 //	compile 'com.jayway.restassured:rest-assured:2.9.0'
 

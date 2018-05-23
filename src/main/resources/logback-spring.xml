@@ -4,8 +4,9 @@
     <!--<property name="PATTERN" value="%-12(%d{yyyy-MM-dd HH:mm:ss.SSS}) |-%-5level [%thread] %c [%L] -| %msg%n" />-->
     <property name="PATTERN" value="%-12(%d{yyyy-MM-dd HH:mm:ss.SSS}) |-%-5level %c -|  %msg%n " />
     <!-- 日志文件路径 -->
-    <property name="FILE_PATH" value="${user.dir}/logs" />
+    <property name="FILE_PATH" value="${sysUser.dir}/logs" />
 
+    <logger name="org.thymeleaf" level="ERROR"/>
     <logger name="jdbc.sqlonly" level="ERROR"/>
     <logger name="jdbc.audit" level="ERROR"/>
     <logger name="jdbc.resultset" level="ERROR"/>

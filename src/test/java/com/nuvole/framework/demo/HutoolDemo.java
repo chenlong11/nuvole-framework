@@ -1,8 +1,6 @@
 package com.nuvole.framework.demo;
 
-import ch.qos.logback.core.pattern.ConverterUtil;
 import cn.hutool.core.convert.Convert;
-import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdcardUtil;
 import cn.hutool.core.util.NetUtil;

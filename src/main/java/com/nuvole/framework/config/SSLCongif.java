@@ -7,14 +7,13 @@ import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * Created by chenlong
  * Date：2018/2/6
  * time：16:34
  */
-@Configuration
+//@Configuration
 public class SSLCongif {
 
     @Bean

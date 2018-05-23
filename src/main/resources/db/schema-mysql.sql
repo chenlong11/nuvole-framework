@@ -1,14 +1,38 @@
-DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS `sys_module`;
+CREATE TABLE `sys_module` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mname` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
-CREATE TABLE user
-(
-	test_id BIGINT(20) NOT NULL COMMENT '主键ID',
-	tenant_id BIGINT(20) NOT NULL COMMENT '租户ID',
-	name VARCHAR(30) NULL DEFAULT NULL COMMENT '名称',
-	age INT(11) NULL DEFAULT NULL COMMENT '年龄',
-	test_type INT(11) NULL DEFAULT NULL COMMENT '测试下划线字段命名类型',
-	test_date DATETIME NULL DEFAULT NULL COMMENT '日期',
-	role BIGINT(20) NULL DEFAULT NULL COMMENT '测试',
-	phone VARCHAR(11) NULL DEFAULT NULL COMMENT '手机号码',
-	PRIMARY KEY (test_id)
-);
+DROP TABLE IF EXISTS `sys_module_role`;
+CREATE TABLE `sys_module_role` (
+  `rid` int(11) DEFAULT NULL,
+  `mid` int(11) DEFAULT NULL,
+  KEY `rid` (`rid`),
+  KEY `mid` (`mid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `sys_role`;
+CREATE TABLE `sys_role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `rname` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `sys_user`;
+CREATE TABLE `sys_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `sys_user_role`;
+CREATE TABLE `sys_user_role` (
+  `uid` int(11) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
+  KEY `u_fk` (`uid`),
+  KEY `r_fk` (`rid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
