@@ -33,46 +33,115 @@ ext{
 	fastjsonvVersion = '1.2.41'
 	log4jdbcVersion = '1.2'
 	hutoolVersion = '4.0.0'
-	mybatisPlusVersion = '2.1.8'
-	mybatisplusStarterVersion = '1.0.5'
+	mybatisVersion = '3.4.6'
+	SpringMabatisVersion = '1.2.5'
+	mybatisMapperVersion = '4.0.2'
 	shiroVersion = '1.4.0'
 	oauth2Version = '1.0.2'
 }
 
+configurations {
+	mybatisGenerator
+}
+
 dependencies {
-	compile "com.baomidou:mybatisplus-spring-boot-starter:$mybatisplusStarterVersion"
-	compile "com.baomidou:mybatis-plus:$mybatisPlusVersion"
+
+	//常用工具类
 	compile "cn.hutool:hutool-all:$hutoolVersion"
 	compile "com.alibaba:fastjson:$fastjsonvVersion"
-	compile "com.googlecode.log4jdbc:log4jdbc:$log4jdbcVersion"
+
+
+	//spring
 	compile('org.springframework.boot:spring-boot-starter-web')
-
 	compile 'org.springframework:spring-context-support'
+	compile 'org.springframework:spring-tx'
 
-	compile('org.webjars:jquery:2.1.1')
-	compile('org.webjars:bootstrap:3.2.0')
-	compile('org.webjars:webjars-locator')
+	//mybatis
+	compile 'org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.1'
+	compile 'com.github.pagehelper:pagehelper-spring-boot-starter:1.2.5'
 
+	//代码生成
+	mybatisGenerator 'org.mybatis.generator:mybatis-generator-core:1.3.6'
+	mybatisGenerator 'tk.mybatis:mapper:3.5.2'
+	mybatisGenerator 'mysql:mysql-connector-java:5.1.44'
+
+//	compile('org.webjars:jquery:2.1.1')
+//	compile('org.webjars:bootstrap:3.2.0')
+//	compile('org.webjars:webjars-locator')
+
+	//shiro
 	compile "org.apache.shiro:shiro-core:$shiroVersion"
 	compile "org.apache.shiro:shiro-spring:$shiroVersion"
 	compile "org.apache.shiro:shiro-ehcache:$shiroVersion"
 
+	//模板
 	compile "org.springframework.boot:spring-boot-starter-thymeleaf"
 	compile "net.sourceforge.nekohtml:nekohtml"
 
+	//编译工具
 	compile "org.springframework.boot:spring-boot-devtools"
-
 	compileOnly('org.projectlombok:lombok')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 
-	compile "org.apache.oltu.oauth2:org.apache.oltu.oauth2.authzserver:$oauth2Version"
-	compile "org.apache.oltu.oauth2:org.apache.oltu.oauth2.resourceserver:$oauth2Version"
+	//数据库
+	runtime "mysql:mysql-connector-java:5.1.44"
+	compile "com.googlecode.log4jdbc:log4jdbc:$log4jdbcVersion"
+	compile 'com.alibaba:druid-spring-boot-starter:1.1.10'
 
-	compile('org.springframework.boot:spring-boot-starter-actuator')
+    //监控
+//    compile('org.springframework.boot:spring-boot-starter-actuator')
 
-	runtime "mysql:mysql-connector-java"
-
+	//redis
+	compile 'redis.clients:jedis:2.9.0'
 
 //	compile 'com.jayway.restassured:rest-assured:2.9.0'
+
+}
+
+
+def getDbProperties = {
+    def properties = new Properties()
+    file("src/main/resources/mybatis/config.properties").withInputStream { inputStream ->
+        properties.load(inputStream)
+    }
+    properties
+}
+
+task mybatisGenerate {
+
+	doLast {
+
+		def properties = getDbProperties()
+		ant.properties['targetProject'] = projectDir.path
+		ant.properties['driverClass'] = properties.getProperty("jdbc.driverClassName")
+		ant.properties['connectionURL'] = properties.getProperty("jdbc.url")
+		ant.properties['userId'] = properties.getProperty("jdbc.username")
+		ant.properties['password'] = properties.getProperty("jdbc.password")
+		ant.properties['src_main_java'] = sourceSets.main.java.srcDirs[0].path
+		ant.properties['src_main_resources'] = sourceSets.main.resources.srcDirs[0].path
+		ant.properties['modelPackage'] = properties.getProperty("package.model")
+		ant.properties['mapperPackage'] = properties.getProperty("package.mapper")
+		ant.properties['sqlMapperPackage'] = properties.getProperty("package.xml")
+		ant.taskdef(
+				name: 'mbgenerator',
+				classname: 'org.mybatis.generator.ant.GeneratorAntTask',
+				classpath: configurations.mybatisGenerator.asPath
+		)
+		ant.mbgenerator(overwrite: true,
+				configfile: 'src/main/resources/mybatis/generatorConfig.xml', verbose: true) {
+				propertyset {
+				propertyref(name: 'targetProject')
+				propertyref(name: 'userId')
+				propertyref(name: 'driverClass')
+				propertyref(name: 'connectionURL')
+				propertyref(name: 'password')
+				propertyref(name: 'src_main_java')
+				propertyref(name: 'src_main_resources')
+				propertyref(name: 'modelPackage')
+				propertyref(name: 'mapperPackage')
+				propertyref(name: 'sqlMapperPackage')
+			}
+		}
+	}
 
 }

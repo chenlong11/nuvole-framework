@@ -1,21 +1,73 @@
 package com.nuvole.framework.domain;
 
-import com.baomidou.mybatisplus.annotations.TableName;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+public class SysRole {
+    private String id;
 
-/**
- * Created by chenlong
- * Date：2018/3/24
- * time：16:00
- */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@TableName("sys_role")
-public class SysRole extends SuperEntity<SysRole>{
+    private String roleName;
 
-    private String rname;
+    private String roleCode;
 
+    private Long sequence;
+
+    private Long gmtCreate;
+
+    private Long gmtUpdate;
+
+    private Byte status;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id == null ? null : id.trim();
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName == null ? null : roleName.trim();
+    }
+
+    public String getRoleCode() {
+        return roleCode;
+    }
+
+    public void setRoleCode(String roleCode) {
+        this.roleCode = roleCode == null ? null : roleCode.trim();
+    }
+
+    public Long getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(Long sequence) {
+        this.sequence = sequence;
+    }
+
+    public Long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Long getGmtUpdate() {
+        return gmtUpdate;
+    }
+
+    public void setGmtUpdate(Long gmtUpdate) {
+        this.gmtUpdate = gmtUpdate;
+    }
+
+    public Byte getStatus() {
+        return status;
+    }
+
+    public void setStatus(Byte status) {
+        this.status = status;
+    }
 }

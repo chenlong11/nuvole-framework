@@ -1,12 +1,14 @@
 package com.nuvole.framework.config.shiro;
 
-import com.nuvole.framework.domain.SysUser;
+import com.nuvole.framework.dto.SysUserDTO;
+import com.nuvole.framework.service.user.SysUserService;
+import com.nuvole.framework.utils.EncryptionUtil;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.SimpleCredentialsMatcher;
-import org.apache.shiro.crypto.hash.Sha512Hash;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created by chenlong
@@ -15,22 +17,20 @@ import org.apache.shiro.subject.PrincipalCollection;
  */
 public class CredentialsMatcher extends SimpleCredentialsMatcher {
 
+    @Autowired
+    private SysUserService sysUserService;
+
     @Override
     public boolean doCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) {
         UsernamePasswordToken utoken=(UsernamePasswordToken) token;
-        //获得用户输入的密码:(可以采用加盐(salt)的方式去检验)
         String inPassword = new String(utoken.getPassword());
-        //获得数据库中的密码
         String dbPassword=(String) info.getCredentials();
-        //获取盐
         PrincipalCollection principals = info.getPrincipals();
-        SysUser sysUser = (SysUser)principals.getPrimaryPrincipal();
-
-
-        inPassword = new Sha512Hash(inPassword, sysUser.getUsername(), 2).toBase64();
-        //进行密码的比对
-        return this.equals(inPassword, dbPassword);
-
+        String userId = (String)principals.getPrimaryPrincipal();
+        SysUserDTO userDTO = sysUserService.findById(userId);
+        return EncryptionUtil.pwdEncryption(inPassword+userDTO.getLoginName()).equals(dbPassword);
     }
+
+
 
 }

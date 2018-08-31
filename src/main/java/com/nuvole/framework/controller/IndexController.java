@@ -1,11 +1,11 @@
 package com.nuvole.framework.controller;
 
-import com.nuvole.framework.service.IUserService;
+import com.nuvole.framework.config.shiro.ShiroFilterPermissionFactoryBean;
+import com.nuvole.framework.utils.ShiroUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,25 +21,22 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class IndexController {
 
-    @Autowired
-    private IUserService userService;
-
     @GetMapping("/login")
     public String login() {
         return "login";
     }
 
     @PostMapping("/login")
-    public String postlogin(String username, String password) {
+    public String postlogin(String username, String password ,boolean remeberMe) {
 
-        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(username, password);
+        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
         Subject subject = SecurityUtils.getSubject();
         try {
-            subject.login(usernamePasswordToken);
+            token.setRememberMe(remeberMe);
+            subject.login(token);
             Session session = subject.getSession();
-            System.out.println(subject.isPermitted("add"));
             //SysUser user=(SysUser) subject.getPrincipal();
-            return "index";
+            return "redirect:/index";
         } catch (UnknownAccountException uae) {
             //username wasn't in the system, show them an error message?
         } catch (IncorrectCredentialsException ice) {
@@ -60,5 +57,9 @@ public class IndexController {
         return "login";
     }
 
+    @RequestMapping("/index")
+    public String index() {
+        return "/index";
+    }
 
 }

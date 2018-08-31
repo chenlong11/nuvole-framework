@@ -1,12 +1,20 @@
 package com.nuvole.framework.config.shiro;
 
-import com.nuvole.framework.domain.SysModule;
-import com.nuvole.framework.domain.SysUser;
-import com.nuvole.framework.service.IModuleService;
-import com.nuvole.framework.service.IUserService;
-import org.apache.shiro.authc.*;
+import com.nuvole.framework.dto.SysModuleDTO;
+import com.nuvole.framework.dto.SysRoleDTO;
+import com.nuvole.framework.dto.SysUserDTO;
+import com.nuvole.framework.service.moudle.SysModuleService;
+import com.nuvole.framework.service.role.SysRoleService;
+import com.nuvole.framework.service.user.SysUserService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.mgt.RealmSecurityManager;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,36 +27,63 @@ import java.util.List;
  * Date：2018/3/24
  * time：14:28
  */
+@Slf4j
 public class AuthRealm extends AuthorizingRealm {
 
     @Autowired
-    private IUserService userService;
+    private SysUserService sysUserService;
+
     @Autowired
-    private IModuleService moduleService;
+    private SysModuleService sysModuleService;
+
+    @Autowired
+    private SysRoleService sysRoleService;
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-        UsernamePasswordToken utoken = (UsernamePasswordToken) token;//获取用户输入的token
-        String username = utoken.getUsername();
-        SysUser user = userService.findByUsername(username);
-
-        if (null == user){
-            throw new UnknownAccountException("用户不存在");
+        String userName = (String) token.getPrincipal();
+        SysUserDTO user = sysUserService.findByLoginName(userName);
+        if (null == user) {
+            return null;
         }
-        return new SimpleAuthenticationInfo(user, user.getPassword(), this.getClass().getName());
+        SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(user.getId(), user.getPassword(), this.getClass().getName());
+        return simpleAuthenticationInfo;
     }
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principal) {
-        SysUser user = (SysUser) principal.fromRealm(this.getClass().getName()).iterator().next();//获取session中的用户
-        List<String> permissions = new ArrayList<>();
-        List<SysModule> moduleList = moduleService.findByUserId(user.getId());
-        for (SysModule sysModule : moduleList) {
-            permissions.add(sysModule.getMname());
-        }
+
+        String userId = (String) principal.getPrimaryPrincipal();
+        List<String> permissions = getPermissions(userId);
+        List<String> roles = getRoles(userId);
+
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+        info.addRoles(roles);
         info.addStringPermissions(permissions);
+
         return info;
+    }
+
+    private List<String> getRoles(String userId) {
+        List<String> roles = new ArrayList<>();
+        List<SysRoleDTO> roleList = sysRoleService.findByUserId(userId);
+        for (SysRoleDTO sysRole : roleList) {
+            roles.add(sysRole.getRoleCode());
+        }
+        return roles;
+    }
+
+    private List<String> getPermissions(String userId) {
+        List<String> permissions = new ArrayList<>();
+        List<SysModuleDTO> moduleList = sysModuleService.findListByUserId(userId);
+        for (SysModuleDTO sysModule : moduleList) {
+            permissions.add(sysModule.getMenuCode());
+        }
+        return permissions;
+    }
+
+    public void clearAuthz(){
+        this.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
     }
 
 }

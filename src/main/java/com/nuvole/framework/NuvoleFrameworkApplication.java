@@ -2,16 +2,16 @@ package com.nuvole.framework;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.core.annotation.Order;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
-@RestController
-@Order(6)
 public class NuvoleFrameworkApplication {
 
+	public static ConfigurableApplicationContext ac;
+
 	public static void main(String[] args) {
-		SpringApplication.run(NuvoleFrameworkApplication.class, args);
+
+		NuvoleFrameworkApplication.ac = SpringApplication.run(NuvoleFrameworkApplication.class, args);
 	}
 
 }

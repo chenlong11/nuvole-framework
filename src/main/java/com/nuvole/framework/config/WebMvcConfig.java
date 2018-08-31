@@ -26,7 +26,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     /**
      * fastjson数据处理
-     *
      * @return
      */
     @Bean

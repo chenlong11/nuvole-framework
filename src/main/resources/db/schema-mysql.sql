@@ -1,38 +1,59 @@
 DROP TABLE IF EXISTS `sys_module`;
 CREATE TABLE `sys_module` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `mname` varchar(255) DEFAULT NULL,
+  `id` varchar(32) NOT NULL,
+  `menu_code` varchar(50) NOT NULL,
+  `menu_name` varchar(50) NOT NULL,
+  `data_url` varchar(255) DEFAULT '',
+  `pid` varchar(32) DEFAULT '',
+  `level` char(2) NOT NULL,
+  `menu_type` char(2),
+  `sequence` bigint DEFAULT 999,
+  `gmt_create` bigint,
+  `gmt_update` bigint,
+  `status` tinyint DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `sys_module_role`;
 CREATE TABLE `sys_module_role` (
-  `rid` int(11) DEFAULT NULL,
-  `mid` int(11) DEFAULT NULL,
-  KEY `rid` (`rid`),
-  KEY `mid` (`mid`)
+  `id` varchar(32) NOT NULL,
+  `role_id` varchar(32) NOT NULL ,
+  `module_id` varchar(32) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `sys_role`;
 CREATE TABLE `sys_role` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `rname` varchar(255) DEFAULT NULL,
+  `id` varchar(32) NOT NULL,
+  `role_name` varchar(50) NOT NULL,
+  `role_code` varchar(50) NOT NULL,
+  `sequence` bigint DEFAULT 999,
+  `gmt_create` bigint,
+  `gmt_update` bigint,
+  `status` tinyint DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(255) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL,
+  `id` varchar(32) NOT NULL,
+  `login_name` varchar(50) NOT NULL,
+  `mobile` varchar(50) DEFAULT '',
+  `user_name` varchar(50) NOT NULL,
+  `user_code` varchar(50) DEFAULT '',
+  `password` varchar(50) NOT NULL,
+  `sequence` bigint DEFAULT 999,
+  `gmt_create` bigint,
+  `gmt_update` bigint,
+  `status` tinyint DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `sys_user_role`;
 CREATE TABLE `sys_user_role` (
-  `uid` int(11) DEFAULT NULL,
-  `rid` int(11) DEFAULT NULL,
-  KEY `u_fk` (`uid`),
-  KEY `r_fk` (`rid`)
+  `id` varchar(32) NOT NULL,
+  `role_id` varchar(32) NOT NULL ,
+  `user_id` varchar(32) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
